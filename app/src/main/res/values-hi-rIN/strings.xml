@@ -2,5 +2,10 @@
 <resources>
     <string name="app_name">AndroidLabs</string>
     <string name="hello_message">atiti devo bhava </string>
-    <string name="ButtonText">I\'m a button</string>
+    <string name="ButtonText">Button</string>
+    <string name="TextView">Widgets yahan hai</string>
+    <string name="CheckBox">Khali sthaan bharen</string>
+    <string name="Switch">Switch on/off </string>
+    <string name="EditText">Yahan uttar bharen</string>
+
 </resources>
