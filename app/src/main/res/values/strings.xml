@@ -2,8 +2,10 @@
     <string name="app_name">AndroidLabs</string>
     <string name="hello_message">Hello World!</string>
     <string name="ButtonText">Button</string>
-    <string name="TextView">Here are my widgets:</string>
+    <string name="TextView_email">Enter your email address:</string>
+    <string name="TextView_pass">Enter your password :</string>
     <string name="CheckBox">Check this out! </string>
     <string name="Switch">Switch on/off </string>
-    <string name="EditText">Type your answer here </string>
+    <string name="EditText">Type email here </string>
+    <string name="EditText_pass"></string>
 </resources>
