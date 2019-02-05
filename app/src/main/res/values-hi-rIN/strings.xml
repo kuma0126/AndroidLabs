@@ -5,9 +5,14 @@
     <string name="ButtonText">Button</string>
     <string name="TextView_email">email bharein:</string>
     <string name="TextView_pass">password bharein :</string>
+    <string name="TextView_profile">Aapki Profile :</string>
+    <string name="TextView_profile_name">Aapka nam :</string>
+    <string name="TextView_picture">Aapki tasveer :</string>
+    <string name="TextView_take_picture">Tasveer k liye upar button dbaiye:</string>
     <string name="CheckBox">Khali sthaan bharen</string>
     <string name="Switch">Switch on/off </string>
     <string name="EditText">Yahan email bharen</string>
     <string name="EditText_pass"></string>
+    <string name="EditText_name">Apna naam bharein</string>
 
 </resources>

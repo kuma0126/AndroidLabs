@@ -4,8 +4,14 @@
     <string name="ButtonText">Button</string>
     <string name="TextView_email">Enter your email address:</string>
     <string name="TextView_pass">Enter your password :</string>
+    <string name="TextView_profile">Your Profile :</string>
+    <string name="TextView_profile_name">Your name :</string>
+    <string name="TextView_picture">Your picture :</string>
+    <string name="TextView_take_picture">Click above to take your picture :</string>
+
     <string name="CheckBox">Check this out! </string>
     <string name="Switch">Switch on/off </string>
     <string name="EditText">Type email here </string>
     <string name="EditText_pass"></string>
+    <string name="EditText_name">Enter your name</string>
 </resources>
