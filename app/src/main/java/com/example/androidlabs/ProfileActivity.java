@@ -36,6 +36,12 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         Button chatButton = (Button)findViewById(R.id.chatButton);
+        Button weatherButton=(Button)findViewById(R.id.weatherButton);
+
+        weatherButton.setOnClickListener(b -> {
+            Intent toWeather = new Intent(ProfileActivity.this,WeatherForecast.class);
+            startActivity(toWeather);
+        });
 
         chatButton.setOnClickListener(new View.OnClickListener() {
             @Override

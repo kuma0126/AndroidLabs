@@ -3,7 +3,8 @@
     <string name="hello_message">Hello World!</string>
     <string name="SendBtn">Send</string>
     <string name="ReceiveBtn">Receive</string>
-    <string name="ButtonText">Button</string>
+
+    <string name="weatherButton">Go to Weather Forecast</string>
     <string name="TextView_email">Enter your email address:</string>
     <string name="TextView_pass">Enter your password :</string>
     <string name="TextView_profile">Your Profile :</string>
