@@ -1,6 +1,7 @@
 package com.example.androidlabs;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,31 +20,62 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatRoomActivity extends AppCompatActivity {
-
+public class Fragment extends AppCompatActivity {
     ListView chatV;
-    Button btn, receive;//button send or receive
+    Button btn;//button send
     EditText edt;
     List<Message> messages;
+   private ChatAdapter messageAdapter;
     DatabaseClass databaseHelp;
-    private ChatAdapter messageAdapter;
+    public static final int EMPTY_ACTIVITY = 345;
 
+
+
+    //ArrayAdapter<Message> theAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatroom);
-
         chatV = findViewById(R.id.listChat);
         btn = findViewById(R.id.buttonSend);
-
         edt = findViewById(R.id.messageInput);
+
         messages = new ArrayList<>();
+        boolean isTablet = findViewById(R.id.fragmentLocation) != null;
 
         databaseHelp = new DatabaseClass(this);
 
-
-        messageAdapter = new ChatAdapter(messages, this);
+         messageAdapter = new ChatAdapter(messages, this);
         chatV.setAdapter(messageAdapter);
+
+        chatV.setOnItemClickListener((parent, view, position, id) -> {
+            Message message = messageAdapter.getItem(position);
+
+            Bundle dataToPass = new Bundle();
+            dataToPass.putString("message", message.getMessage());
+            dataToPass.putBoolean("checker", message.isChecker());
+            dataToPass.putLong("id", message.getId());
+
+            if(isTablet)
+            {
+                DetailFragment dFragment = new DetailFragment(); //add a DetailFragment
+                dFragment.setArguments( dataToPass ); //pass it a bundle for information
+                dFragment.setTablet(true);  //tell the fragment if it's running on a tablet or not
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(R.id.fragmentLocation, dFragment) //Add the fragment in FrameLayout
+                        .addToBackStack("AnyName") //make the back button undo the transaction
+                        .commit(); //actually load the fragment.
+            }
+            else //isPhone
+            {
+                Intent nextActivity = new Intent(Fragment.this, EmptyActivity.class);
+                nextActivity.putExtras(dataToPass); //send data to next activity
+                startActivityForResult(nextActivity, EMPTY_ACTIVITY); //make the transition
+            }
+
+        });
+
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,33 +100,33 @@ public class ChatRoomActivity extends AppCompatActivity {
             }
         });
 
-        receive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Message data = new Message(edt.getText().toString(), false);
-                // messages.add(data);
-
-                // edt.setText("");
-                // messageAdapter.notifyDataSetChanged();
-
-                if (!edt.getText().toString().equals("")) {
-
-                    databaseHelp.insertData(edt.getText().toString(), false);
-
-                    edt.setText("");
-
-                    messages.clear();
-
-                    viewData();
-                }
-
-            }
-        });
-
         viewData();
 
         Log.e("ChatRoomActivity", "onCreate");
+
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == EMPTY_ACTIVITY)
+        {
+            if(resultCode == RESULT_OK) //if you hit the delete button instead of back button
+            {
+                long id = data.getLongExtra("id", 0);
+                deleteMessageId((int)id);
+            }
+        }
+    }
+
+    public void deleteMessageId(int id)
+    {
+        Log.i("Delete this message:" , " id="+id);
+        messages.remove(id);
+        messageAdapter.notifyDataSetChanged();
+    }
+
+
+
 
     private void viewData() {
 
@@ -106,8 +140,9 @@ public class ChatRoomActivity extends AppCompatActivity {
 
                 messages.add(msg);
 
+                ChatAdapter chatAdapter = new ChatAdapter(messages, getApplicationContext());
 
-               // chatV.setAdapter(chatAdapter);
+                chatV.setAdapter(chatAdapter);
 
             }
 
@@ -116,7 +151,7 @@ public class ChatRoomActivity extends AppCompatActivity {
     }
 
 
-    public static class ChatAdapter extends BaseAdapter {
+    public class ChatAdapter extends BaseAdapter {
         List<Message> msg;
         Context ctx;
         LayoutInflater inflater;
@@ -171,4 +206,5 @@ public class ChatRoomActivity extends AppCompatActivity {
 
         }
     }
+
 }

@@ -47,7 +47,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent itLab4 = new Intent(ProfileActivity.this, ChatRoomActivity.class);
+                Intent itLab4 = new Intent(ProfileActivity.this, Fragment.class);
                 startActivityForResult(itLab4, 345);
             }
         });
