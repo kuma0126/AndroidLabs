@@ -3,9 +3,6 @@ package com.example.androidlabs;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.example.androidlabs.DetailFragment;
-import com.example.androidlabs.R;
-
 public class EmptyActivity extends AppCompatActivity {
 
     @Override

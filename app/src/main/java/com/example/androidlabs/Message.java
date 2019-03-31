@@ -10,16 +10,18 @@ public class Message {
 
 
 
-    public Message(String message, boolean checker){
+    public Message(String message,long id, boolean checker){
 
         this.message=message;
         this.checker=checker;
+        this.id=id;
+
     }
 
     public Message()
 
     {
-        this("unknown",false);
+        this("unknown",0,false);
     }
 
 

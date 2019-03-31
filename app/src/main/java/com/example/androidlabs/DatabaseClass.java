@@ -18,8 +18,11 @@ public class DatabaseClass extends SQLiteOpenHelper {
     private static final String COL_MESSAGE = "Message";
     private static final String COL_ISSEND = "IsSend";
     private static final String COL_MESSAGEID = "MessageID";
+    private static final String COL_MESSAGE_GIVENID = "Message_GIVENID";
     private static final String CREATE_TABLE = "CREATE TABLE "+DB_TABLE+" ("+COL_MESSAGEID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+COL_MESSAGE+" TEXT, "+COL_ISSEND+" BIT);";
 
+
+    SQLiteDatabase db = this.getWritableDatabase();
     public DatabaseClass(Context context) {
 
         super(context, DB_NAME, null, 2);
@@ -46,7 +49,7 @@ public class DatabaseClass extends SQLiteOpenHelper {
 
     public boolean insertData(String message, boolean isSend) {
 
-        SQLiteDatabase db = this.getWritableDatabase();
+
 
         ContentValues contentValues = new ContentValues();
 
@@ -66,7 +69,9 @@ public class DatabaseClass extends SQLiteOpenHelper {
         return result != -1;
 
     }
-
+public void delete(Long id){
+        db.execSQL("DELETE FROM " +DB_TABLE+" WHERE "+COL_MESSAGEID+"="+id+";");
+}
 
 
     public Cursor viewData(){

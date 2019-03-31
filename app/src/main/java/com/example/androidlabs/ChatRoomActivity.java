@@ -24,7 +24,10 @@ public class ChatRoomActivity extends AppCompatActivity {
     EditText edt;
     List<Message> messages;
     DatabaseClass databaseHelp;
-    private ChatAdapter messageAdapter;
+    public static final String MESSAGE = "message";
+    public static final String IS_SEND = "isSend";
+    public static final String ID = "id";
+    public ChatAdapter messageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,139 +39,129 @@ public class ChatRoomActivity extends AppCompatActivity {
 
         edt = findViewById(R.id.messageInput);
         messages = new ArrayList<>();
-
         databaseHelp = new DatabaseClass(this);
-
 
         messageAdapter = new ChatAdapter(messages, this);
         chatV.setAdapter(messageAdapter);
+        boolean isTablet = findViewById(R.id.fragmentLocation) != null; //check if the FrameLayout is loaded
 
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Message data = new Message(edt.getText().toString(), true);
-                //  messages.add(data);
-
-                // edt.setText("");
-                // messageAdapter.notifyDataSetChanged();
+        chatV.setOnItemClickListener((list, item, position, id) -> {
+            Bundle bundle = new Bundle();
+            bundle.putString(MESSAGE, messageAdapter.getItem(position).getMessage());
+            bundle.putLong(ID, messageAdapter.getItem(position).getId());
+            bundle.putBoolean(IS_SEND, messageAdapter.getItem(position).isChecker());
 
 
-                if (!edt.getText().toString().equals("")) {
-
-                    databaseHelp.insertData(edt.getText().toString(), true);
-
-                    edt.setText("");
-
-                    messages.clear();
-
-                    viewData();
-                }
+            if (isTablet) {
+                DetailFragment dFragment = new DetailFragment();
+                dFragment.setArguments(bundle);
+                dFragment.setTablet(true);
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(R.id.fragmentLocation, dFragment)
+                        .addToBackStack("Any Stack")
+                        .commit();
             }
+
         });
+                btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!edt.getText().toString().equals("")) {
+                            databaseHelp.insertData(edt.getText().toString(), true);
+                            edt.setText("");
+                            messages.clear();
+                            viewData();
+                        }
+                    }
+                });
 
-        receive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Message data = new Message(edt.getText().toString(), false);
-                // messages.add(data);
+                viewData();
+                Log.e("ChatRoomActivity", "onCreate");
 
-                // edt.setText("");
-                // messageAdapter.notifyDataSetChanged();
+    }
 
-                if (!edt.getText().toString().equals("")) {
+    public void delete_msg(Long id){
+        Log.i("Delete this message:" , " id="+id);
+        databaseHelp.delete(id);
+        messageAdapter.notifyDataSetChanged();
 
-                    databaseHelp.insertData(edt.getText().toString(), false);
 
-                    edt.setText("");
+    }
+        private void viewData(){
 
-                    messages.clear();
+            Cursor cursor = databaseHelp.viewData();
 
-                    viewData();
+            if (cursor.getCount() != 0) {
+
+                while (cursor.moveToNext()) {
+
+                    Message msg = new Message(cursor.getString(1),cursor.getLong(0), cursor.getInt(2) == 0);
+
+                    messages.add(msg);
+
+                    ChatAdapter chatAdapter = new ChatAdapter(messages, getApplicationContext());
+
+                    chatV.setAdapter(chatAdapter);
+
                 }
 
             }
-        });
 
-        viewData();
-
-        Log.e("ChatRoomActivity", "onCreate");
-    }
-
-    private void viewData() {
-
-        Cursor cursor = databaseHelp.viewData();
-
-        if (cursor.getCount() != 0) {
-
-            while (cursor.moveToNext()) {
-
-                Message msg = new Message(cursor.getString(1), cursor.getInt(2) == 0);
-
-                messages.add(msg);
+        }
 
 
-               // chatV.setAdapter(chatAdapter);
+        private class ChatAdapter extends BaseAdapter {
+            List<Message> msg;
+            Context ctx;
+            LayoutInflater inflater;
 
+
+            public ChatAdapter(List<Message> msg, Context ctx) {
+                this.ctx = ctx;
+                this.msg = msg;
+                this.inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             }
 
-        }
-
-    }
-
-
-    public static class ChatAdapter extends BaseAdapter {
-        List<Message> msg;
-        Context ctx;
-        LayoutInflater inflater;
-
-
-        public ChatAdapter(List<Message> msg, Context ctx) {
-            this.ctx = ctx;
-            this.msg = msg;
-            this.inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        }
-
-        @Override
-        public int getCount() {
-            return msg.size();
-        }
-
-
-        @Override
-        public Message getItem(int position) {
-            return msg.get(position);
-        }
-
-
-        @Override
-        public long getItemId(int position) {
-            return (long) position;
-        }
-
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-
-            View result = convertView;
-
-            if (msg.get(position).isChecker()) {
-
-                result = inflater.inflate(R.layout.activity_send, null);
-
-            } else {
-                result = inflater.inflate(R.layout.activity_receive, null);
-
-
+            @Override
+            public int getCount() {
+                return msg.size();
             }
 
 
-            TextView message = result.findViewById(R.id.messageText);
-            message.setText(msg.get(position).getMessage()); // get the string at position
+            @Override
+            public Message getItem(int position) {
+                return msg.get(position);
+            }
 
 
-            return result;
+            @Override
+            public long getItemId(int position) {
+                return (long) position;
+            }
 
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+
+
+                View result = convertView;
+
+                if (msg.get(position).isChecker()) {
+
+                    result = inflater.inflate(R.layout.activity_send, null);
+
+                } else {
+                    result = inflater.inflate(R.layout.activity_receive, null);
+
+                }
+
+                TextView message = result.findViewById(R.id.messageText);
+                message.setText(msg.get(position).getMessage()); // get the string at position
+
+
+                return result;
+
+            }
         }
     }
-}
