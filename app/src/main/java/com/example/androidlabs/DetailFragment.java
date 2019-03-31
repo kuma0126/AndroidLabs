@@ -53,7 +53,7 @@ public class DetailFragment extends Fragment {
             else //You are only looking at the details, you need to go back to the previous list page
             {
                 EmptyActivity parent = (EmptyActivity) getActivity();
-             //  Intent backToFragmentExample = new Intent();
+              Intent backToFragmentExample = new Intent();
 
                 backToFragmentExample.putExtra("id", dataFromActivity.getLong("id" ));
                 backToFragmentExample.putExtra("message", dataFromActivity.getString("message" ));
