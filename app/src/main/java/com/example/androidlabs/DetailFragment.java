@@ -1,6 +1,8 @@
 package com.example.androidlabs;
 
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -42,6 +44,14 @@ public class DetailFragment extends Fragment {
 
                 parent.getSupportFragmentManager().beginTransaction().remove(this).commit();
 
+            }
+            else{
+                EmptyActivity parent = (EmptyActivity) getActivity();
+                Intent backToFragmentExample = new Intent();
+                backToFragmentExample.putExtra(ChatRoomActivity.ID, dataFromActivity.getLong(ChatRoomActivity.ID ));
+
+                parent.setResult(Activity.RESULT_OK, backToFragmentExample); //send data back to FragmentExample in onActivityResult()
+                parent.finish(); //go back
             }
 
         });

@@ -1,6 +1,7 @@
 package com.example.androidlabs;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,8 @@ public class ChatRoomActivity extends AppCompatActivity {
     public static final String MESSAGE = "message";
     public static final String IS_SEND = "isSend";
     public static final String ID = "id";
+    public static final int EMPTY_ACTIVITY = 345;
+
     public ChatAdapter messageAdapter;
 
     @Override
@@ -62,8 +65,19 @@ public class ChatRoomActivity extends AppCompatActivity {
                         .addToBackStack("Any Stack")
                         .commit();
             }
+            else{
 
-        });
+                    Intent nextActivity = new Intent(ChatRoomActivity.this, EmptyActivity.class);
+                    nextActivity.putExtras(bundle); //send data to next activity
+                    startActivityForResult(nextActivity, EMPTY_ACTIVITY); //make the transition
+
+            }
+
+        }
+
+
+
+        );
                 btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -81,9 +95,24 @@ public class ChatRoomActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == EMPTY_ACTIVITY)
+        {
+            if(resultCode == RESULT_OK) //if you hit the delete button instead of back button
+            {
+                long id = data.getLongExtra(ID, 0);
+                delete_msg(id);
+            }
+        }
+    }
+
     public void delete_msg(Long id){
         Log.i("Delete this message:" , " id="+id);
+
         databaseHelp.delete(id);
+       // messages.remove(messages.get(id.intValue()));
         messageAdapter.notifyDataSetChanged();
 
 
