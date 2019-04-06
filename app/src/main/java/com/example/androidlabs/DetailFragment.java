@@ -23,6 +23,7 @@ public class DetailFragment extends Fragment {
     public View onCreateView( LayoutInflater inflater,  ViewGroup container, Bundle savedInstanceState) {
         dataFromActivity=getArguments();
         Long id=dataFromActivity.getLong(ChatRoomActivity.ID);
+        int position=dataFromActivity.getInt(ChatRoomActivity.POSITION);
         Boolean isSend=(dataFromActivity.getBoolean(ChatRoomActivity.IS_SEND));
         View result =  inflater.inflate(R.layout.detail, container, false);
 
@@ -40,7 +41,7 @@ public class DetailFragment extends Fragment {
         delete.setOnClickListener(clk -> {
             if (isTablet) {
                 ChatRoomActivity parent = (ChatRoomActivity) getActivity();
-                parent.delete_msg(id);
+                parent.delete_msg(id,position);
 
                 parent.getSupportFragmentManager().beginTransaction().remove(this).commit();
 
@@ -49,6 +50,7 @@ public class DetailFragment extends Fragment {
                 EmptyActivity parent = (EmptyActivity) getActivity();
                 Intent backToFragmentExample = new Intent();
                 backToFragmentExample.putExtra(ChatRoomActivity.ID, dataFromActivity.getLong(ChatRoomActivity.ID ));
+                backToFragmentExample.putExtra(ChatRoomActivity.POSITION,dataFromActivity.getInt(ChatRoomActivity.POSITION));
 
                 parent.setResult(Activity.RESULT_OK, backToFragmentExample); //send data back to FragmentExample in onActivityResult()
                 parent.finish(); //go back
